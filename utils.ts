@@ -1,11 +1,4 @@
-// Authors: Bluscream, Cursor.AI
 // Created at 2025-10-06 04:37:17
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { findByPropsLazy } from "@webpack";
 import { ChannelStore, GuildChannelStore, GuildStore, InviteActions, MessageStore } from "@webpack/common";
 

@@ -1,11 +1,4 @@
-// Authors: Bluscream, Cursor.AI
 // Created at 2025-10-06 05:09:50
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -16,7 +9,6 @@ import { ServerData } from "./utils";
 
 // so we can filter the native helpers by this key
 export function keepServersUniqueIdThingyIdkMan() { }
-
 
 let serversDataDir: string;
 

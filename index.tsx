@@ -1,11 +1,11 @@
-// Authors: Bluscream, Cursor.AI
-// Created at 2025-10-06 04:36:59
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+export const pluginInfo = {
+    id: "keepServers",
+    name: "KeepServers (Native)",
+    description: "Keeps track of servers you",
+    color: "#7289da"
+};
 
+// Created at 2025-10-06 04:36:59
 import { definePluginSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
 import { Devs } from "@utils/constants";
@@ -20,7 +20,7 @@ import { getNative } from "./nativeUtils.js";
 
 export const cl = classNameFactory("blu-keep-servers-");
 
-export const logger = new Logger("KeepServers", "#7289da");
+export const logger = new Logger(pluginInfo.name, pluginInfo.color);
 
 const settings = definePluginSettings({
     showInGuildList: {
@@ -127,7 +127,7 @@ async function onGuildDelete(event: any) {
 
 export default definePlugin({
     name: "KeepServers (Native)",
-    description: "Keeps track of servers you've joined and allows you to rejoin them later",
+    description: pluginInfo.descriptionve joined and allows you to rejoin them later",
     authors: [
         { name: "Bluscream", id: 467777925790564352n },
         { name: "Cursor.AI", id: 0n },
