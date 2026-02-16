@@ -1,19 +1,19 @@
 {
-    "name":  "blu-keepServers.desktop",
-    "version":  "1.0.0",
-    "description":  "Keeps track of servers you\u0027ve joined and allows you to rejoin them later",
-    "main":  "index.tsx",
-    "author":  {
-                   "name":  "Bluscream",
-                   "url":  "https://github.com/Bluscream"
-               },
-    "license":  "GPL-3.0-or-later",
-    "repository":  {
-                       "type":  "git",
-                       "url":  "https://github.com/bluscream-vencord-plugins/blu-keepServers.desktop.git"
-                   },
-    "vencord":  {
-                    "plugin":  true,
-                    "userPlugin":  true
-                }
+    "name": "keepServers",
+    "version": "1.0.0",
+    "description": "Keeps track of servers you've joined and allows you to rejoin them later",
+    "main": "index.tsx",
+    "author": {
+        "name": "Bluscream",
+        "url": "https://github.com/Bluscream"
+    },
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bluscream-vencord-plugins/keepServers.git"
+    },
+    "vencord": {
+        "plugin": true,
+        "userPlugin": true
+    }
 }

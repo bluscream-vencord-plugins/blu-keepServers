@@ -1,44 +1,42 @@
+//// Plugin originally written for Equicord at 2026-02-16 by https://github.com/Bluscream, https://antigravity.google
+// region Imports
+import definePlugin from "@utils/types";
+import { Logger } from "@utils/Logger";
+import {
+    FluxDispatcher,
+    GuildStore,
+    InviteActions,
+    NavigationRouter,
+    React
+} from "@webpack/common";
+
+import { settings } from "./settings";
+import { openServerInfoModal } from "./components/ServerInfoModal.js";
+import {
+    createFakeGuildEntry,
+    getServerInviteCode,
+    removeFakeGuildEntry,
+    saveServerData
+} from "./utils.js";
+import { getNative } from "./nativeUtils.js";
+// endregion Imports
+
+// region PluginInfo
 export const pluginInfo = {
     id: "keepServers",
-    name: "KeepServers (Native)",
-    description: "Keeps track of servers you",
-    color: "#7289da"
+    name: "KeepServers",
+    description: "Keeps track of servers you've joined and allows you to rejoin them later",
+    color: "#7289da",
+    authors: [
+        { name: "Bluscream", id: 467777925790564352n },
+        { name: "Assistant", id: 0n }
+    ],
 };
+// endregion PluginInfo
 
-// Created at 2025-10-06 04:36:59
-import { definePluginSettings } from "@api/Settings";
-import { classNameFactory } from "@api/Styles";
-import { Devs } from "@utils/constants";
-import { Logger } from "@utils/Logger";
-import definePlugin, { OptionType } from "@utils/types";
-import { findByPropsLazy } from "@webpack";
-import { FluxDispatcher, GuildStore, InviteActions, NavigationRouter, React } from "@webpack/common";
-
-import { openServerInfoModal } from "./components/ServerInfoModal.js";
-import { createFakeGuildEntry, getServerInviteCode, removeFakeGuildEntry, saveServerData } from "./utils.js";
-import { getNative } from "./nativeUtils.js";
-
-export const cl = classNameFactory("blu-keep-servers-");
-
-export const logger = new Logger(pluginInfo.name, pluginInfo.color);
-
-const settings = definePluginSettings({
-    showInGuildList: {
-        type: OptionType.BOOLEAN,
-        description: "Show removed servers in guild list",
-        default: true
-    },
-    autoCreateInvites: {
-        type: OptionType.BOOLEAN,
-        description: "Automatically create invite links when joining servers",
-        default: true
-    },
-    searchForInvites: {
-        type: OptionType.BOOLEAN,
-        description: "Search for existing invite links in server messages",
-        default: true
-    }
-});
+// region Variables
+const logger = new Logger(pluginInfo.id, pluginInfo.color);
+const storedServers = new Map<string, ServerData>();
 
 interface ServerData {
     id: string;
@@ -48,10 +46,9 @@ interface ServerData {
     joinedAt: string;
     removedAt?: string;
 }
+// endregion Variables
 
-const storedServers = new Map<string, ServerData>();
-
-// Load stored servers on plugin start
+// region Utils
 async function loadStoredServers() {
     try {
         const native = getNative();
@@ -65,7 +62,6 @@ async function loadStoredServers() {
     }
 }
 
-// Save servers to external storage
 async function saveStoredServers() {
     try {
         const native = getNative();
@@ -90,7 +86,6 @@ async function onGuildCreate(guild: any) {
     };
 
     try {
-        // Try to create or find an invite code
         const inviteCode = await getServerInviteCode(guild.id);
         if (inviteCode) {
             serverData.inviteCode = inviteCode;
@@ -105,33 +100,29 @@ async function onGuildCreate(guild: any) {
 }
 
 async function onGuildDelete(event: any) {
-
     const { guild } = event;
-    if (guild.unavailable) return; // Server is temporarily unavailable, not removed
+    if (guild.unavailable) return;
 
     logger.info(`Left/removed from server: ${guild.id}`);
 
     const serverData = storedServers.get(guild.id);
     if (!serverData) return;
 
-    // Mark as removed and update storage
     serverData.removedAt = new Date().toISOString();
     storedServers.set(guild.id, serverData);
     saveStoredServers();
 
-    // Add fake guild entry to guild list if enabled
     if (settings.store.showInGuildList) {
         createFakeGuildEntry(serverData);
     }
 }
+// endregion Utils
 
+// region Definition
 export default definePlugin({
-    name: "KeepServers (Native)",
-    description: pluginInfo.descriptionve joined and allows you to rejoin them later",
-    authors: [
-        { name: "Bluscream", id: 467777925790564352n },
-        { name: "Cursor.AI", id: 0n },
-    ],
+    name: pluginInfo.name,
+    description: pluginInfo.description,
+    authors: pluginInfo.authors,
     settings,
 
     patches: [
@@ -184,7 +175,6 @@ export default definePlugin({
 
     handleGuildClick(originalOnClick: (guildId: string) => void) {
         return (guildId: string) => {
-            // Check if this is a fake guild
             if (guildId.startsWith('fake-')) {
                 const originalId = guildId.replace('fake-', '');
                 const serverData = storedServers.get(originalId);
@@ -193,18 +183,17 @@ export default definePlugin({
                     return;
                 }
             }
-
-            // Call the original onClick handler for real guilds
             originalOnClick(guildId);
         };
     },
 
     async start() {
         loadStoredServers();
-        logger.info("KeepServers plugin started");
+        logger.info("Plugin started");
     },
 
     stop() {
-        logger.info("KeepServers plugin stopped");
+        logger.info("Plugin stopped");
     }
 });
+// endregion Definition
